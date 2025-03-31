@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCC - Gestão de Cerâmica</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 70px;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+        }
+
+        .sidebar {
+            border: 1px solid #ddd;
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .footer {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">TCC</a>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="#">Instruções</a></li>
+                    <li><a href="#">Sobre</a></li>
+                    <li><a href="#">Solver</a></li>
+                    <li><a href="#">Projetos</a></li>
+                    <li><a href="#">Fornos</a></li>
+                    <li><a href="item">Itens</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">Sair</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="row">
+            <!-- Left Panel -->
+            <div class="col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="forno">Forno</label>
+                            <select class="form-control" id="forno">
+                                <option>Forno elétrico - (80x60x120)</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <label>Comp.</label>
+                                <input type="text" class="form-control" placeholder="80">
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Profund.</label>
+                                <input type="text" class="form-control" placeholder="60">
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Altura</label>
+                                <input type="text" class="form-control" placeholder="120">
+                            </div>
+                            <div class="col-sm-3">
+                                <label>Alt. Andares</label>
+                                <input type="text" class="form-control" placeholder="5 15 30">
+                            </div>
+                        </div>
+                        <button class="btn btn-default pull-right" style="margin-top: 10px;">+ Novo Forno</button>
+                    </div>
+                </div>
+
+                <h4>Itens</h4>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Descrição</th>
+                            <th>Qt.</th>
+                            <th>Dimensões</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>🔺</td>
+                            <td>Jarra de suco</td>
+                            <td>2</td>
+                            <td>L: 18, A: 30</td>
+                            <td><button class="btn btn-danger btn-xs">✖</button></td>
+                        </tr>
+                        <tr>
+                            <td>🔺</td>
+                            <td>Vaso de canto</td>
+                            <td>3</td>
+                            <td>L: 15, A: 22</td>
+                            <td><button class="btn btn-danger btn-xs">✖</button></td>
+                        </tr>
+                        <!-- Adicione mais linhas conforme necessário -->
+                    </tbody>
+                </table>
+
+                <div class="form-group">
+                    <label for="novoProjeto">Novo Projeto</label>
+                    <input type="text" class="form-control" id="novoProjeto" placeholder="Pedido #23">
+                </div>
+                <button class="btn btn-primary">Salvar</button>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="col-md-4">
+                <div class="sidebar">
+                    <h4>Itens salvos</h4>
+                    <ul class="list-unstyled">
+                        <li>🟨 Meu quadrado - 100x30</li>
+                        <li>🔵 Prato de jantar - 100x3</li>
+                        <li>🔺 Vaso - 20x30</li>
+                        <li>🟥 Peça retangular - 100x50x30</li>
+                    </ul>+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer text-center">
+        <div class="container">
+            <p class="text-muted">&copy; 2024 TCC. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+
+</html>
+
+

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Cerâmica</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 70px;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .left-menu, .right-menu {
+            width: 20%;
+            min-width: 200px;
+        }
+
+        .center-content {
+            flex-grow: 1;
+        }
+
+        .table th, .table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .fullWidth {
+            width: 100%;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: 100%;
+        }
+
+        .forno-menu {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+     <!-- Navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">TCC</a>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+                <ul class="nav navbar-nav">
+                    <li><a href="#">Instruções</a></li>
+                    <li><a href="#">Sobre</a></li>
+                    <li><a href="#">Solver</a></li>
+                    <li><a href="#">Projetos</a></li>
+                    <li><a href="#">Fornos</a></li>
+                    <li><a href="item">Itens</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">Sair</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Left Menu -->
+        <div class="left-menu">
+            <h3>Adicionar Peça</h3>
+            <form id="add-item-form">
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <div class="btn-group btn-group-toggle fullWidth" data-toggle="buttons">
+                        <label class="btn btn-outline-primary active">
+                            <input type="radio" name="itemType" value="1" checked> <img src="static/images/rectangle32.png" />
+                        </label>
+                        <label class="btn btn-outline-primary">
+                            <input type="radio" name="itemType" value="4"> <img src="static/images/square32.png" />
+                        </label>
+                        <label class="btn btn-outline-primary">
+                            <input type="radio" name="itemType" value="3"> <img src="static/images/circle32.png" />
+                        </label>
+                        <label class="btn btn-outline-primary">
+                            <input type="radio" name="itemType" value="2"> <img src="static/images/triangle32.png" />
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <input type="text" class="form-control" name="description" placeholder="Descrição">
+                </div>
+
+                <div class="form-group">
+                    <label>Dimensões</label>
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" class="form-control" name="length" placeholder="Comprimento">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" name="width" placeholder="Profundidade">
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" name="height" placeholder="Altura">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Adicionar Item</button>
+            </form>
+        </div>
+
+        <!-- Center Content -->
+        <div class="center-content">
+            <h3>Itens Adicionados</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Dimensões</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="item-list">
+                    <tr>
+                        <td colspan="4">Nenhum item adicionado</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Itens no Forno</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Dimensões</th>
+                        <th>Quantidade</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="forno-list">
+                    <tr>
+                        <td colspan="5">Nenhum item no forno</td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-warning btn-block" onclick="fazerForno()">Criar Fornada</button>
+        </div>
+
+        <!-- Right Menu -->
+        <div class="right-menu">
+            <h3>Catálogo</h3>
+            <input type="file" id="catalog-upload" class="form-control mb-2" accept=".txt" style="display: none;" onchange="handleFileUpload(event)">
+            <button class="btn btn-success btn-block" onclick="document.getElementById('catalog-upload').click()">Carregar Catálogo</button>
+            <button class="btn btn-secondary btn-block" onclick="downloadCatalog()">Baixar Catálogo</button>
+
+            <div class="forno-menu">
+                <h3>Criar Forno</h3>
+                <form id="create-forno-form">
+                    <div class="form-group">
+                        <label>Comprimento</label>
+                        <input type="number" class="form-control" name="fornoLength" placeholder="Comprimento">
+                    </div>
+                    <div class="form-group">
+                        <label>Largura</label>
+                        <input type="number" class="form-control" name="fornoWidth" placeholder="Largura">
+                    </div>
+                    <div class="form-group">
+                        <label>Altura</label>
+                        <input type="number" class="form-control" name="fornoHeight" placeholder="Altura">
+                    </div>
+                    <div class="form-group">
+                        <label>Prateleiras</label>
+                        <input type="number" class="form-control" name="fornoShelves" placeholder="Número de Prateleiras">
+                    </div>
+                    <div class="form-group">
+                        <label>Altura das Prateleiras</label>
+                        <input type="text" class="form-control" name="shelfHeights" placeholder="Alturas separadas por vírgulas">
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="saveForno()">Salvar Forno</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js"></script>
+    <script>
+        // Adiciona um item na tabela
+        document.getElementById('add-item-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const item = {
+                type: formData.get('itemType'),
+                description: formData.get('description'),
+                dimensions: `C: ${formData.get('length')} P: ${formData.get('width')} A: ${formData.get('height')}`,
+            };
+
+            const tableBody = document.getElementById('item-list');
+            if (tableBody.querySelector('td[colspan="4"]')) {
+                tableBody.innerHTML = '';
+            }
+
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${item.type}</td>
+                <td>${item.description}</td>
+                <td>${item.dimensions}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="removeItem(this)">Remover</button>
+                    <button class="btn btn-warning btn-sm" onclick="addToForno(this)">Enviar ao Forno</button>
+                    <button class="btn btn-primary btn-sm" onclick="editItem(this)">Editar</button>
+                </td>
+            `;
+            tableBody.appendChild(newRow);
+        });
+
+        // Remove um item da tabela
+        function removeItem(button) {
+            // Exibe a janela de confirmação
+            const confirmation = confirm("Você tem certeza que deseja excluir esse item da lista de itens?");
+
+            // Se o usuário confirmar, o item será removido
+            if (confirmation) {
+                const row = button.closest('tr');
+                row.remove();
+
+                const tableBody = document.getElementById('item-list');
+                if (!tableBody.querySelector('tr')) {
+                    tableBody.innerHTML = '<tr><td colspan="4">Nenhum item adicionado</td></tr>';
+                }
+            }
+        }
+
+        // Adiciona um item ao forno
+        function addToForno(button) {
+            const row = button.closest('tr');
+            const cells = row.querySelectorAll('td');
+            const item = {
+                type: cells[0].innerText,
+                description: cells[1].innerText,
+                dimensions: cells[2].innerText
+            };
+
+            const fornoBody = document.getElementById('forno-list');
+            if (fornoBody.querySelector('td[colspan="5"]')) {
+                fornoBody.innerHTML = '';
+            }
+
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${item.type}</td>
+                <td>${item.description}</td>
+                <td>${item.dimensions}</td>
+                <td><input type="number" class="form-control" placeholder="Quantidade"></td>
+                <td><button class="btn btn-danger btn-sm" onclick="removeFromForno(this)">Remover</button></td>
+            `;
+            fornoBody.appendChild(newRow);
+            row.remove();
+
+            const tableBody = document.getElementById('item-list');
+            if (!tableBody.querySelector('tr')) {
+                tableBody.innerHTML = '<tr><td colspan="4">Nenhum item adicionado</td></tr>';
+            }
+        }
+
+        // Remove um item do forno
+        function removeFromForno(button) {
+            const row = button.closest('tr');
+            const cells = row.querySelectorAll('td');
+            const item = {
+                type: cells[0].innerText,
+                description: cells[1].innerText,
+                dimensions: cells[2].innerText
+            };
+
+            const tableBody = document.getElementById('item-list');
+            if (tableBody.querySelector('td[colspan="4"]')) {
+                tableBody.innerHTML = '';
+            }
+
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${item.type}</td>
+                <td>${item.description}</td>
+                <td>${item.dimensions}</td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="removeItem(this)">Remover</button>
+                    <button class="btn btn-warning btn-sm" onclick="addToForno(this)">Enviar ao Forno</button>
+                    <button class="btn btn-primary btn-sm" onclick="editItem(this)">Editar</button>
+                </td>
+            `;
+            tableBody.appendChild(newRow);
+
+            row.remove();
+
+            const fornoBody = document.getElementById('forno-list');
+            if (!fornoBody.querySelector('tr')) {
+                fornoBody.innerHTML = '<tr><td colspan="5">Nenhum item no forno</td></tr>';
+            }
+        }
+
+        // Edita um item da tabela
+        function editItem(button) {
+            const row = button.closest('tr');
+            const cells = row.querySelectorAll('td');
+            const type = cells[0].innerText;
+            const description = cells[1].innerText;
+            const dimensions = cells[2].innerText.split(' ');
+
+            const [length, width, height] = dimensions.map(d => d.split(':')[1].trim());
+
+            const form = document.getElementById('add-item-form');
+            form.itemType.value = type;
+            form.description.value = description;
+            form.length.value = length;
+            form.width.value = width;
+            form.height.value = height;
+
+            row.remove();
+        }
+
+        // Função para carregar o catálogo (TXT)
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const content = e.target.result;
+                    const lines = content.split('\n');
+
+                    // Limpar a lista de peças
+                    const tableBody = document.getElementById('item-list');
+                    tableBody.innerHTML = '';
+
+                    lines.forEach(line => {
+                        if (line.startsWith('forno:')) {
+                            // Carregar dados do forno
+                            const fornoData = line.replace('forno:', '').split(',');
+                            const fornoForm = document.getElementById('create-forno-form');
+                            fornoForm.fornoLength.value = fornoData[0];
+                            fornoForm.fornoWidth.value = fornoData[1];
+                            fornoForm.fornoHeight.value = fornoData[2];
+                            fornoForm.shelfHeights.value = fornoData[3];
+                        } else if (line.startsWith('peca:')) {
+                            // Carregar dados das peças
+                            const pecaData = line.replace('peca:', '').split(',');
+                            const newRow = document.createElement('tr');
+                            newRow.innerHTML = `
+                                <td>${pecaData[0]}</td>
+                                <td>${pecaData[1]}</td>
+                                <td>C: ${pecaData[2]} P: ${pecaData[3]} A: ${pecaData[4]}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm" onclick="removeItem(this)">Remover</button>
+                                    <button class="btn btn-warning btn-sm" onclick="addToForno(this)">Enviar ao Forno</button>
+                                    <button class="btn btn-primary btn-sm" onclick="editItem(this)">Editar</button>
+                                </td>
+                            `;
+                            tableBody.appendChild(newRow);
+                        }
+                    });
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        function downloadCatalog() {
+        const fornoForm = document.getElementById('create-forno-form');
+        const fornoData = {
+            comprimento: parseFloat(fornoForm.fornoLength.value),
+            largura: parseFloat(fornoForm.fornoWidth.value),
+            altura: parseFloat(fornoForm.fornoHeight.value),
+            prateleiras: fornoForm.shelfHeights.value.split(',').map(Number),
+        };
+
+        // Coletar as peças da lista de itens
+        const pecas = [];
+        const tableBody = document.getElementById('item-list');
+        const rows = tableBody.querySelectorAll('tr');
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length > 1) {
+                const tipo = cells[0].innerText;
+                const descricao = cells[1].innerText;
+                const dimensoes = cells[2].innerText.match(/\d+/g); // Extrai números da string
+
+                if (dimensoes && dimensoes.length === 3) {
+                    pecas.push({
+                        type: parseInt(tipo),
+                        description: descricao,
+                        length: parseFloat(dimensoes[0]),
+                        width: parseFloat(dimensoes[1]),
+                        height: parseFloat(dimensoes[2]),
+                    });
+                }
+            }
+        });
+
+        // Coletar as peças da lista do forno
+        const fornoBody = document.getElementById('forno-list');
+        const fornoRows = fornoBody.querySelectorAll('tr');
+        fornoRows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length > 1) {
+                const tipo = cells[0].innerText;
+                const descricao = cells[1].innerText;
+                const dimensoes = cells[2].innerText.match(/\d+/g); // Extrai números da string
+
+                if (dimensoes && dimensoes.length === 3) {
+                    pecas.push({
+                        type: parseInt(tipo),
+                        description: descricao,
+                        length: parseFloat(dimensoes[0]),
+                        width: parseFloat(dimensoes[1]),
+                        height: parseFloat(dimensoes[2]),
+                        quantity: parseInt(quantidade),
+                    });
+                }
+            }
+        });
+
+        // Criar o conteúdo do arquivo TXT
+        let content = `forno:${fornoData.comprimento},${fornoData.largura},${fornoData.altura},${fornoData.prateleiras.join(',')}\n`;
+        pecas.forEach(peca => {
+            content += `peca:${peca.type},${peca.description},${peca.length},${peca.width},${peca.height},${peca.quantity}\n`;
+        });
+
+        // Criar e baixar o arquivo TXT
+        const blob = new Blob([content], { type: 'text/plain' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'catalogo.txt';
+        link.click();
+    }
+
+        function fazerForno() {
+        // Coletar dados do forno do formulário
+        const fornoForm = document.getElementById('create-forno-form');
+        const fornoData = {
+            comprimento: parseFloat(fornoForm.fornoLength.value),
+            largura: parseFloat(fornoForm.fornoWidth.value),
+            altura: parseFloat(fornoForm.fornoHeight.value),
+            prateleiras: fornoForm.shelfHeights.value.split(',').map(Number),
+        };
+
+        // Verificar se os dados do forno são válidos
+        if (isNaN(fornoData.comprimento) || isNaN(fornoData.largura) || isNaN(fornoData.altura) || fornoData.prateleiras.some(isNaN)) {
+            alert("Dados do forno inválidos. Verifique os valores inseridos.");
+            return;
+        }
+
+        // Coletar dados das peças no forno
+        const pecas = [];
+        const fornoBody = document.getElementById('forno-list');
+        const rows = fornoBody.querySelectorAll('tr');
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (cells.length > 1) {
+                const tipo = cells[0].innerText;  // Tipo da peça
+                const descricao = cells[1].innerText;  // Descrição da peça
+                const dimensoes = cells[2].innerText.match(/\d+/g);  // Extrai números da string
+                const quantidade = cells[3].querySelector('input').value;  // Quantidade da peça
+
+                if (dimensoes && dimensoes.length === 3) {
+                    pecas.push({
+                        type: parseInt(tipo),
+                        description: descricao,
+                        quantity: parseInt(quantidade),
+                        length: parseFloat(dimensoes[0]),
+                        width: parseFloat(dimensoes[1]),
+                        height: parseFloat(dimensoes[2]),
+                    });
+                }
+            }
+        });
+
+        // Verificar se há peças no forno
+        if (pecas.length === 0) {
+            alert("Nenhuma peça foi adicionada ao forno.");
+            return;
+        }
+
+        // Enviar dados para o backend
+        fetch("/alocar-pecas", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ forno: fornoData, pecas }),
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                window.location.href = result.pdf_url;  // Redireciona para o PDF gerado
+            } else {
+                alert(result.message);  // Exibe mensagem de erro
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao processar o forno.');  // Exibe mensagem de erro genérico
+        });
+    }
+
+        // Função para salvar o forno no catálogo (TXT)
+        function saveForno() {
+            const fornoForm = document.getElementById('create-forno-form');
+            const fornoData = {
+                comprimento: parseFloat(fornoForm.fornoLength.value),
+                largura: parseFloat(fornoForm.fornoWidth.value),
+                altura: parseFloat(fornoForm.fornoHeight.value),
+                prateleiras: fornoForm.shelfHeights.value.split(',').map(Number),
+            };
+
+            // Salvar o forno no localStorage (ou enviar para o backend)
+            localStorage.setItem('forno', JSON.stringify(fornoData));
+            alert('Forno salvo com sucesso!');
+        }
+    </script>
+</body>
+</html>
+
+
+
+
